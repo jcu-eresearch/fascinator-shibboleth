@@ -38,6 +38,13 @@
             <type>warpath</type>
         </dependency>
         <dependency>
+            <groupId>com.googlecode.the-fascinator</groupId>
+            <artifactId>fascinator-portal</artifactId>
+            <version>1.1</version>
+            <classifier>classes</classifier>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
