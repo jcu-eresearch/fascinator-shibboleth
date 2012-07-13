@@ -1,13 +1,47 @@
 The Fascinator Shibboleth SSO Plugin
 ====
 
-This project is a plguin for The Fasconator prooject: https://code.google.com/p/the-fascinator
-though, typically, it would be used in an institional build of RedBoX: http://code.google.com/p/redbox-mint/
-To use it, you firstly need to run mvn install:
+This project is a plugin for The Fascinator project: https://code.google.com/p/the-fascinator
+though, typically, it would be used in an institutional build of RedBoX: http://code.google.com/p/redbox-mint/ .
+You will need to run your servlet container behind a shibboleth enabled web server like Apache.
+See
+    * https://wiki.shibboleth.net/confluence/display/SHIB2/Installation+and+Configuration
+    * http://wiki.aaf.edu.au/tech-info/sp-install-guide
+
+Apache example using mod_proxy_ajp:
+
+    ProxyPass /redbox  ajp://localhost:8009/redbox
+    ProxyPassReverse /redbox  ajp://localhost:8009/redbox
+
+    <Location /redbox/default/sso>
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        require valid-user
+    </Location>
+
+
+Add the following to the config/server/jetty/etc/server.xml file of your institutional build:
+
+    <Call name="addConnector">
+      <Arg>
+        <New class="org.mortbay.jetty.ajp.Ajp13SocketConnector">
+          <Set name="port">8009</Set>
+        </New>
+      </Arg>
+    </Call>
+
+In /etc/shibboleth/shobboleth2.xml add attributePrefix="AJP_" to the ApplicationDefaults element:
+
+    <ApplicationDefaults ...
+                          attributePrefix="AJP_">
+
+
+To compile the fascinator-shibboleth plugin:
 
 	#> mvn install
 
-Then in your institional build (when using ReDBox for example)
+To enable Shibboleth ib your institutional build (when using ReDBox for example)
+add the following dependency to your pom.xml:
 
         <dependency>
             <groupId>fascinator-shibboleth</groupId>
@@ -15,7 +49,7 @@ Then in your institional build (when using ReDBox for example)
             <version>${shib.version}</version>
         </dependency>
 
-Then add the unpack-shib-conf execution to the maven-dependency-plugin:
+You will need to add the unpack-shib-conf execution to the maven-dependency-plugin:
 
            <!-- 1st - Unpack Generic Mint setup -->
             <plugin>
@@ -50,9 +84,10 @@ Then add the unpack-shib-conf execution to the maven-dependency-plugin:
                 </executions>
             </plugin>
 
-Then in the sso section of home/config/system-config.json enable the Shibboleth plugin:
+And then, in the sso section of home/config/system-config.json, enable the Shibboleth plugin:
 
 	...
 	"sso": {
         	"plugins": ["Shibboleth"],
 	...
+
