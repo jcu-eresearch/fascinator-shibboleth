@@ -2,6 +2,7 @@ The Fascinator Shibboleth SSO Plugin
 ====
 
 This project is a plguin for The Fasconator prooject: https://code.google.com/p/the-fascinator
+though, typically, it would be used in an institional build of RedBoX: http://code.google.com/p/redbox-mint/
 To use it, you firstly need to run mvn install:
 
 	#> mvn install
