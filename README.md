@@ -50,6 +50,7 @@ Then add the unpack-shib-conf execution to the maven-dependency-plugin:
             </plugin>
 
 Then in the sso section of home/config/system-config.json enable the Shibboleth plugin:
+
 	...
 	"sso": {
         	"plugins": ["Shibboleth"],
