@@ -21,14 +21,15 @@ package au.edu.jcu.fascinator.portal.sso;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.junit.Test;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.StringWriter;
 import java.util.Properties;
 
 /**
  * Fascinator Shibboleth Integration
+ *
  * @author Nigel Bajema
  */
 public class TemplateTest {
@@ -41,7 +42,7 @@ public class TemplateTest {
         Template t = Velocity.getTemplate("shibboleth/interface.vm");
         StringWriter sw = new StringWriter();
         VelocityContext vc = new VelocityContext();
-        vc.put("shibboleth_url","http://example.com/idp");
+        vc.put("shibboleth_url", "http://example.com/idp");
         t.merge(vc, sw);
         Assert.assertEquals("<a href=\"http://example.com/idp\"><img title=\"AAF\" src=\"http://wiki.aaf.edu.au/home/_/rsrc/1316786640042/config/aaf_button.png\" alt=\"AAF Shibboleth Login\"></a>", sw.toString());
     }
