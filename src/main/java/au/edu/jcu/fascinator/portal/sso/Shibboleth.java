@@ -106,7 +106,8 @@ public class Shibboleth implements SSOInterface {
         StringWriter sw = new StringWriter();
         VelocityContext vc = new VelocityContext();
         try {
-            vc.put("shibboleth_url", ssoUrl);
+            vc.put("shibboleth_url", ssoUrl.replace("default/sso","default/sso/shibboleth"));
+//            vc.put("shibboleth_url", "https://oberon.jcu.edu.au/redbox/default/sso/shibboleth?ssoId=Shibboleth");
             shibbolethTemplate.merge(vc, sw);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -172,6 +173,7 @@ public class Shibboleth implements SSOInterface {
 
     @Override
     public void ssoInit(JsonSessionState session, HttpServletRequest request) throws Exception {
+//        request.getSession().getServletContext().
         logger.trace(String.format("ssoInit, URL: %s", session.get("ssoPortalUrl")));
         Object tmp;
         for (String key : SHIB_ATTRIBUTES) {

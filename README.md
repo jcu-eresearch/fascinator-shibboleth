@@ -13,7 +13,7 @@ Apache example using mod_proxy_ajp:
     ProxyPass /redbox  ajp://localhost:8009/redbox
     ProxyPassReverse /redbox  ajp://localhost:8009/redbox
 
-    <Location /redbox/default/sso>
+    <Location /redbox/default/sso/shibboleth>
         AuthType shibboleth
         ShibRequestSetting requireSession 1
         require valid-user
@@ -80,7 +80,6 @@ You will need to add the unpack-shib-conf execution to the maven-dependency-plug
                             </artifactItems>
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
 
