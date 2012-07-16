@@ -4,9 +4,9 @@ The Fascinator Shibboleth SSO Plugin
 This project is a plugin for The Fascinator project: https://code.google.com/p/the-fascinator
 though, typically, it would be used in an institutional build of RedBoX: http://code.google.com/p/redbox-mint/ .
 You will need to run your servlet container behind a shibboleth enabled web server like Apache.
-See
-    * https://wiki.shibboleth.net/confluence/display/SHIB2/Installation+and+Configuration
-    * http://wiki.aaf.edu.au/tech-info/sp-install-guide
+See:
+* https://wiki.shibboleth.net/confluence/display/SHIB2/Installation+and+Configuration
+* http://wiki.aaf.edu.au/tech-info/sp-install-guide
 
 Apache example using mod_proxy_ajp:
 
