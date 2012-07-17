@@ -30,7 +30,7 @@ Add the following to the config/server/jetty/etc/server.xml file of your institu
       </Arg>
     </Call>
 
-In /etc/shibboleth/shobboleth2.xml add attributePrefix="AJP_" to the ApplicationDefaults element:
+In /etc/shibboleth/shibboleth2.xml add attributePrefix="AJP_" to the ApplicationDefaults element:
 
     <ApplicationDefaults ...
                           attributePrefix="AJP_">
@@ -83,10 +83,127 @@ You will need to add the unpack-shib-conf execution to the maven-dependency-plug
                 </executions>
             </plugin>
 
-And then, in the sso section of home/config/system-config.json, enable the Shibboleth plugin:
+Configuration
+====
 
-	...
+In the sso section of home/config/system-config.json, enable the Shibboleth plugin:
+
+	.
+	.
+	.
 	"sso": {
         	"plugins": ["Shibboleth"],
-	...
+	.
+	.
+	.
 
+Shibboleth
+----
+
+Add the Shibboleth configuration section:
+
+    "Shibboleth":{
+        "useHeaders": "false",
+        "username_attribute":"eppn",
+        "cn_attribute":"cn",
+        "session_attribute":"Shib-Session-ID",
+        "idp_attribute":"Shib-Identity-Provider",
+        "attributes":["affiliation"],
+        "delimiter":";",
+        "rolePlugins":["Simple"],
+        .
+        .
+        .
+     }
+
+### useHeaders
+The `useHeaders` element enables the Shibboleth plugin to process the request `HEADERS`
+along with the request `ATTRIBUTES` for Shibboleth attributes. This is disabled by
+default because it posses a security issue as clients can spoof the request headers.
+
+### username_attribute
+The `username_attribute` element indicates which Shibboleth attribute contains the
+user's username.
+
+### cn_attribute
+The `cn_attribute` element indicates which Shibboleth attribute contains the user's
+common name.
+
+### session_attribute
+The `session_attribute` element indicates which Shibboleth attribute contains the
+Shibboleth session ID.
+
+### idp_attribute
+The `idp_attribute` element indicates which Shibboleth attribute contains the
+Shibboleth IDP value.
+
+### attributes
+The `attributes` element contains a list of Shibboleth attributes that will be extracted
+from the request and attached to the session for processing by role managers etc.
+
+### delimiter
+The `delimiter` element contains the character or string that will be used to split
+attributes that have multiple values delimited by the delimiter. eg: the affiliation
+attribute often contains more than on value:
+
+        affiliation: member@edu.au;student@edu.au
+
+###rolePlugins
+the `rolePlugins` element is a list of SimpleShibbolethRoleManager IDs that will
+be enabled by this configuration. eg. the config above enables the
+SimpleShibbolethRoleManager with:
+
+    "rolePlugins":["Simple"]
+
+
+SimpleShibbolethRoleManager
+----
+When the SimpleShibbolethRoleManager is enabled it will need to be configured. It expects
+to find its configuration in the existing Shibboleth block, for example:
+
+    "Shibboleth":{
+        .
+        .
+        .
+        "SimpleShibbolethRoleManager":{
+            "reviewer":[
+                ["affiliation","is","member@edu.au"]
+            ],
+            "ourInstitution":[
+                ["Shib-Identity-Provider","is","https://idp.example.com:8443/idp/shibboleth"]
+            ]
+        }
+    },
+
+The format of the SimpleShibbolethRoleManager block is:
+
+    role :[
+        [attribute, operation, rule_value],
+        [attribute, operation, rule_value],
+    ],
+    role
+
+Where
+
+* `role` is the role that will be applied.
+* `attribute` is the Shibboleth attribute attached to the session.
+* `operation` is the ID of the ShibSimpleRoleOperator plugin to use.
+* `rule_value` is a value passed to the operation along with the value of the `attribute` retrieved from the session.
+
+Within a `role`'s set of rules, the results of each operation are logically `AND`ed together.
+To use an `OR`, just have multiple entries for the same `role`.
+
+Development
+====
+
+There are currently two types of plugins that can be implemented to extend the functionality
+of the fascinator-shibboleth plugin:
+
+*   au.edu.jcu.fascinator.portal.sso.shibboleth.ShibbolethRoleManager
+*   au.edu.jcu.fascinator.portal.sso.shibboleth.roles.simple.ShibSimpleRoleOperator
+
+The ShibbolethRoleManager plugins allow developers to implement there own plugin for
+assigning roles to users.
+The ShibSimpleRoleOperator plugins allow developers to extent the functionality of the
+SimpleShibbolethRoleManager by implementing new operations.
+Both of these plugins use the standard Fascinator plugin mechanisms.
