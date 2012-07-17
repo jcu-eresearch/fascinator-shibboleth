@@ -17,7 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package au.edu.jcu.fascinator.portal.sso;
+package au.edu.jcu.fascinator.portal.sso.shibboleth;
 
 import com.googlecode.fascinator.api.authentication.User;
 import com.googlecode.fascinator.common.JsonSimpleConfig;
@@ -32,8 +32,10 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static au.edu.jcu.fascinator.portal.sso.shibboleth.Constants.*;
+
 
 /**
  * Fascinator Shibboleth Integration
@@ -44,37 +46,38 @@ public class Shibboleth implements SSOInterface {
     private static Logger logger = LoggerFactory.getLogger(Shibboleth.class);
     private Template shibbolethTemplate;
 
-    private static final String HOME = "shib-go-home";
+    private static final String RETURN_ADDRESS = "shib-return-address";
 
     private String SHIB_SESSION_ID;
     private String SHIB_IDP;
     private String SHIB_COMMON_NAME;
     private String SHIB_USER_NAME;
     private String SHIB_ATTRIBUTE_DELIMITER;
+    private boolean SHIB_USE_HEADERS = false;
     private List<String> SHIB_ATTRIBUTES = new ArrayList<String>();
-
-    private static final String SHIBBOLETH_PLUGIN_ID = "Shibboleth";
+    private List<ShibbolethRoleManager> roleManagers = new ArrayList<ShibbolethRoleManager>();
 
     {
         try {
             logger.debug(String.format("Resource Loader Path: %s", Velocity.getProperty(Velocity.FILE_RESOURCE_LOADER_PATH).toString()));
             shibbolethTemplate = Velocity.getTemplate("shibboleth/interface.vm");
-            JsonSimpleConfig d = new JsonSimpleConfig();
-            String shib_path = SHIBBOLETH_PLUGIN_ID.toLowerCase();
+            JsonSimpleConfig config = new JsonSimpleConfig();
 
-            SHIB_ATTRIBUTE_DELIMITER = d.getString(";", shib_path, "delimiter");
+            SHIB_ATTRIBUTE_DELIMITER = config.getString(";", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_DELIMITER);
 
-            SHIB_SESSION_ID = d.getString("Shib_Session_ID", shib_path, "session_attribute");
+            SHIB_SESSION_ID = config.getString("Shib-Session-ID", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_SESSION_ATTR);
             SHIB_ATTRIBUTES.add(SHIB_SESSION_ID);
-            SHIB_IDP = d.getString("Shib_Identity_Provide", shib_path, "idp_attribute");
+            SHIB_IDP = config.getString("Shib-Identity-Provide", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_IDP_ATTRIBUTE);
             SHIB_ATTRIBUTES.add(SHIB_IDP);
-            SHIB_COMMON_NAME = d.getString("cn", shib_path, "cn_attribute");
+            SHIB_COMMON_NAME = config.getString("cn", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_CN_ATTRIBUTE);
             SHIB_ATTRIBUTES.add(SHIB_COMMON_NAME);
-            SHIB_USER_NAME = d.getString("eppn", shib_path, "username_attribute");
+            SHIB_USER_NAME = config.getString("eppn", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_USERNAME_ATTRIBUTE);
             SHIB_ATTRIBUTES.add(SHIB_USER_NAME);
 
-            List attrs = d.getArray(shib_path, "attributes");
+            List attrs = config.getArray(SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_ATTRIBUTES);
             SHIB_ATTRIBUTES.addAll(attrs);
+
+            SHIB_USE_HEADERS = config.getBoolean(SHIB_USE_HEADERS, SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_USE_HEADERS);
 
             logger.debug(String.format("Session ID Attribute: %s", SHIB_SESSION_ID));
             logger.debug(String.format("Shib Identity Provider Attribute: %s", SHIB_IDP));
@@ -83,11 +86,20 @@ public class Shibboleth implements SSOInterface {
             logger.debug(String.format("Shib Attributes: %s", attrs));
             logger.debug(String.format("Shib Attribute split: %s", SHIB_ATTRIBUTE_DELIMITER));
 
+            ServiceLoader<ShibbolethRoleManager> providers = ServiceLoader.load(ShibbolethRoleManager.class);
+            List plugins = config.getArray(SHIBBOLETH_PLUGIN_ID, "rolePlugins");
+            String pluginId;
+            for (Object plugin : plugins) {
+                for (ShibbolethRoleManager provider : providers) {
+                    if (provider.getId().equals(plugin.toString())) {
+                        logger.debug(String.format("Added Role Manager: %s", provider.getId()));
+                        roleManagers.add(provider);
+                    }
+                }
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
-
     }
 
     @Override
@@ -106,7 +118,7 @@ public class Shibboleth implements SSOInterface {
         StringWriter sw = new StringWriter();
         VelocityContext vc = new VelocityContext();
         try {
-            vc.put("shibboleth_url", ssoUrl.replace("default/sso","default/sso/shibboleth"));
+            vc.put("shibboleth_url", ssoUrl.replace("default/sso", "default/sso/shibboleth"));
             shibbolethTemplate.merge(vc, sw);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -115,9 +127,20 @@ public class Shibboleth implements SSOInterface {
     }
 
     @Override
-    public List<String> getRolesList(JsonSessionState jsonSessionState) {
+    public List<String> getRolesList(JsonSessionState session) {
         logger.trace("getRolesList");
-        return new ArrayList<String>();
+        List<String> toRet = new ArrayList<String>();
+        Set<String> roleSet = new HashSet<String>();
+        List<String> roles;
+        for (ShibbolethRoleManager roleManager : roleManagers) {
+            roles = roleManager.getRolesList(session);
+            logger.trace(String.format("Role Manager: %s provided the roles: %s", roleManager.getId(), roles));
+            roleSet.addAll(roles);
+        }
+        toRet.addAll(roleSet);
+        logger.debug(String.format("Role List: %s", toRet));
+        return toRet;
+
     }
 
     @Override
@@ -151,16 +174,6 @@ public class Shibboleth implements SSOInterface {
         return null;
     }
 
-    private String join(String delimiter, List<String> toJoin) {
-        StringBuilder toRet = new StringBuilder();
-        String del = "";
-        for (String s : toJoin) {
-            toRet.append(s).append(del);
-            del = delimiter;
-        }
-        return toRet.toString();
-    }
-
     @Override
     public void logout(JsonSessionState session) {
         logger.trace("Logout Requested");
@@ -173,19 +186,39 @@ public class Shibboleth implements SSOInterface {
     @Override
     public void ssoInit(JsonSessionState session, HttpServletRequest request) throws Exception {
         logger.trace(String.format("ssoInit, URL: %s", session.get("ssoPortalUrl")));
+
+        if (logger.isTraceEnabled()) {
+            logger.trace("Available Attributes:");
+            Enumeration<String> attrs = request.getAttributeNames();
+            String name;
+            logger.trace("\n");
+            while (attrs.hasMoreElements()) {
+                name = attrs.nextElement();
+                logger.trace(String.format("\t\t%s: %s", name, request.getAttribute(name)));
+            }
+            logger.trace("\n");
+            logger.trace("Available Headers:");
+            attrs = request.getHeaderNames();
+            while (attrs.hasMoreElements()) {
+                name = attrs.nextElement();
+                logger.trace(String.format("\t\t%s: %s", name, request.getHeader(name)));
+            }
+            logger.trace("\n");
+        }
+
         Object tmp;
         for (String key : SHIB_ATTRIBUTES) {
             tmp = request.getAttribute(key);
             if (tmp != null) {
                 addAttr(key, tmp.toString(), session);
             }
-            tmp = request.getHeader(key);
-            if (tmp != null) {
-                addAttr(key, tmp.toString(), session);
+            if (SHIB_USE_HEADERS) {
+                tmp = request.getHeader(key);
+                if (tmp != null) {
+                    addAttr(key, tmp.toString(), session);
+                }
             }
         }
-
-
     }
 
     @SuppressWarnings("unchecked")
@@ -197,8 +230,16 @@ public class Shibboleth implements SSOInterface {
         } else {
             l = (List<String>) o;
         }
-        logger.trace(String.format("Adding: %s : %s", key, value));
-        l.add(value);
+        List<String> vals;
+        if (SHIB_ATTRIBUTE_DELIMITER != null) {
+            vals = Arrays.asList(value.split(SHIB_ATTRIBUTE_DELIMITER));
+            logger.trace(String.format("Adding: %s : %s", key, vals));
+        }else
+        {
+            vals = new ArrayList<String>();
+            vals.add(value);
+        }
+        l.addAll(vals);
     }
 
     @Override
@@ -209,13 +250,23 @@ public class Shibboleth implements SSOInterface {
     @Override
     public String ssoGetRemoteLogonURL(JsonSessionState session) {
         logger.trace("ssoGetRemoteLogonURL");
-        return (String) session.get(HOME);
+        return (String) session.get(RETURN_ADDRESS);
     }
 
     @Override
     public void ssoPrepareLogin(JsonSessionState session, String returnAddress, String server) throws Exception {
         logger.trace(String.format("ssoPrepareLogin, Return Address: %s Server: %s", returnAddress, server));
-        session.set(HOME, returnAddress);
+        session.set(RETURN_ADDRESS, returnAddress);
+    }
+
+    private String join(String delimiter, List<String> toJoin) {
+        StringBuilder toRet = new StringBuilder();
+        String del = "";
+        for (String s : toJoin) {
+            toRet.append(s).append(del);
+            del = delimiter;
+        }
+        return toRet.toString();
     }
 }
 

@@ -17,25 +17,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package au.edu.jcu.fascinator.portal.sso;
-
-import com.googlecode.fascinator.common.authentication.GenericUser;
+package au.edu.jcu.fascinator.portal.sso.shibboleth;
 
 /**
  * Fascinator Shibboleth Integration
  *
  * @author Nigel Bajema
  */
-public class ShibbolethUser extends GenericUser {
-    private String commonName;
+public interface Constants {
+    public static final String SHIBBOLETH_PLUGIN_ID = "Shibboleth";
+    public static final String SHIBBOLETH_USE_HEADERS = "useHeaders";
 
-    public ShibbolethUser(String username, String commonName) {
-        setUsername(username);
-        this.commonName = commonName;
-    }
-
-    @Override
-    public String realName() {
-        return commonName;
-    }
+//    public static final String SHIBBOLETH_PATH = SHIBBOLETH_PLUGIN_ID.toLowerCase();
+    public static final String SHIBBOLETH_DELIMITER = "delimiter";
+    public static final String SHIBBOLETH_SESSION_ATTR = "session_attribute";
+    public static final String SHIBBOLETH_IDP_ATTRIBUTE = "idp_attribute";
+    public static final String SHIBBOLETH_CN_ATTRIBUTE = "cn_attribute";
+    public static final String SHIBBOLETH_USERNAME_ATTRIBUTE = "username_attribute";
+    public static final String SHIBBOLETH_ATTRIBUTES = "attributes";
 }
