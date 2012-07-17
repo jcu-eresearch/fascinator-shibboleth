@@ -28,7 +28,6 @@ public interface Constants {
     public static final String SHIBBOLETH_PLUGIN_ID = "Shibboleth";
     public static final String SHIBBOLETH_USE_HEADERS = "useHeaders";
 
-//    public static final String SHIBBOLETH_PATH = SHIBBOLETH_PLUGIN_ID.toLowerCase();
     public static final String SHIBBOLETH_DELIMITER = "delimiter";
     public static final String SHIBBOLETH_SESSION_ATTR = "session_attribute";
     public static final String SHIBBOLETH_IDP_ATTRIBUTE = "idp_attribute";

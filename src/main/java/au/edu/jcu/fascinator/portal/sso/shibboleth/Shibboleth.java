@@ -43,7 +43,7 @@ import static au.edu.jcu.fascinator.portal.sso.shibboleth.Constants.*;
  * @author Nigel Bajema
  */
 public class Shibboleth implements SSOInterface {
-    private static Logger logger = LoggerFactory.getLogger(Shibboleth.class);
+    private static final Logger logger = LoggerFactory.getLogger(Shibboleth.class);
     private Template shibbolethTemplate;
 
     private static final String RETURN_ADDRESS = "shib-return-address";
@@ -88,7 +88,6 @@ public class Shibboleth implements SSOInterface {
 
             ServiceLoader<ShibbolethRoleManager> providers = ServiceLoader.load(ShibbolethRoleManager.class);
             List plugins = config.getArray(SHIBBOLETH_PLUGIN_ID, "rolePlugins");
-            String pluginId;
             for (Object plugin : plugins) {
                 for (ShibbolethRoleManager provider : providers) {
                     if (provider.getId().equals(plugin.toString())) {

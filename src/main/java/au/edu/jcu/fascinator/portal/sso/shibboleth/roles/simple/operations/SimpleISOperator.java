@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * @author Nigel Bajema
  */
 public class SimpleISOperator implements ShibSimpleRoleOperator {
-    private static Logger logger = LoggerFactory.getLogger(SimpleISOperator.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleISOperator.class);
     @Override
     public String getOperator() {
         return "is";

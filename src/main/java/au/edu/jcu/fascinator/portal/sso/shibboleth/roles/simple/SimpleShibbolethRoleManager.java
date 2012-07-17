@@ -43,11 +43,9 @@ import static au.edu.jcu.fascinator.portal.sso.shibboleth.Constants.SHIBBOLETH_P
  * @author Nigel Bajema
  */
 public class SimpleShibbolethRoleManager implements ShibbolethRoleManager {
-    private static Logger logger = LoggerFactory.getLogger(SimpleShibbolethRoleManager.class);
-    private JsonSimpleConfig config;
+    private static final Logger logger = LoggerFactory.getLogger(SimpleShibbolethRoleManager.class);
     private JsonObject cfg;
-    private String del;
-    private Hashtable<String, ShibSimpleRoleOperator> operations = new Hashtable<String, ShibSimpleRoleOperator>();
+    private final Hashtable<String, ShibSimpleRoleOperator> operations = new Hashtable<String, ShibSimpleRoleOperator>();
 
     public static final int ATTR_POS = 0;
     public static final int OP_POS = 1;
@@ -55,8 +53,8 @@ public class SimpleShibbolethRoleManager implements ShibbolethRoleManager {
 
     public SimpleShibbolethRoleManager() {
         try {
-            config = new JsonSimpleConfig();
-            configure(config);
+            JsonSimpleConfig config = new JsonSimpleConfig();
+            cfg = config.getObject(SHIBBOLETH_PLUGIN_ID, SimpleShibbolethRoleManager.class.getSimpleName());
             ServiceLoader<ShibSimpleRoleOperator> providers = ServiceLoader.load(ShibSimpleRoleOperator.class);
             for (ShibSimpleRoleOperator provider : providers) {
                 operations.put(provider.getOperator(), provider);
@@ -112,10 +110,5 @@ public class SimpleShibbolethRoleManager implements ShibbolethRoleManager {
             }
         }
         return toRet;
-    }
-
-    public void configure(JsonSimpleConfig config) {
-        del = config.getString(";", SHIBBOLETH_PLUGIN_ID, SHIBBOLETH_DELIMITER);
-        cfg = config.getObject(SHIBBOLETH_PLUGIN_ID, SimpleShibbolethRoleManager.class.getSimpleName());
     }
 }
