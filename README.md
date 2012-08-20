@@ -110,7 +110,7 @@ Add the Shibboleth configuration section:
         "idp_attribute":"Shib-Identity-Provider",
         "attributes":["affiliation"],
         "delimiter":";",
-        "rolePlugins":["Simple"],
+        "rolePlugins":["SimpleShibbolethRoleManager"],
         .
         .
         .
@@ -153,7 +153,7 @@ the `rolePlugins` element is a list of SimpleShibbolethRoleManager IDs that will
 be enabled by this configuration. eg. the config above enables the
 SimpleShibbolethRoleManager with:
 
-    "rolePlugins":["Simple"]
+    "rolePlugins":["SimpleShibbolethRoleManager"]
 
 
 SimpleShibbolethRoleManager
