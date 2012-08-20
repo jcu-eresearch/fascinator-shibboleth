@@ -20,7 +20,7 @@ Apache example using mod_proxy_ajp:
     </Location>
 
 
-Add the following to the config/server/jetty/etc/server.xml file of your institutional build:
+Add the following to the config/server/jetty/etc/jetty.xml file of your institutional build:
 
     <Call name="addConnector">
       <Arg>
