@@ -67,7 +67,7 @@ public class SimpleShibbolethRoleManager implements ShibbolethRoleManager {
 
     @Override
     public String getId() {
-        return "Simple";
+        return "SimpleShibbolethRoleManager";
     }
 
     @Override
