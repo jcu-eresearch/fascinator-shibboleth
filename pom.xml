@@ -29,6 +29,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <fascinator.version>1.1.1</fascinator.version>
+        <icons.dir>target/icons</icons.dir>
     </properties>
 
     <dependencies>
@@ -105,7 +106,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>${project.name}_config_assembly</id>
+                        <id>fascinator-shibboleth_config_assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>

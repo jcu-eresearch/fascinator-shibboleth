@@ -44,6 +44,6 @@ public class TemplateTest {
         VelocityContext vc = new VelocityContext();
         vc.put("shibboleth_url", "http://example.com/idp");
         t.merge(vc, sw);
-        Assert.assertEquals("<a href=\"http://example.com/idp\"><img title=\"AAF\" src=\"http://wiki.aaf.edu.au/home/_/rsrc/1316786640042/config/aaf_button.png\" alt=\"AAF Shibboleth Login\"></a>", sw.toString());
+        Assert.assertEquals("<a href=\"http://example.com/idp\">Shibboleth Login</a>", sw.toString());
     }
 }
