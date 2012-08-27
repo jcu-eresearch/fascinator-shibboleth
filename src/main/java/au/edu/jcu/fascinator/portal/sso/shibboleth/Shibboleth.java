@@ -57,6 +57,8 @@ public class Shibboleth implements SSOInterface {
     private List<String> SHIB_ATTRIBUTES = new ArrayList<String>();
     private List<ShibbolethRoleManager> roleManagers = new ArrayList<ShibbolethRoleManager>();
 
+    private String serverUrlBase;
+
     {
         try {
             logger.debug(String.format("Resource Loader Path: %s", Velocity.getProperty(Velocity.FILE_RESOURCE_LOADER_PATH).toString()));
@@ -96,6 +98,8 @@ public class Shibboleth implements SSOInterface {
                     }
                 }
             }
+
+            serverUrlBase = config.getString(null, "urlBase");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -118,6 +122,7 @@ public class Shibboleth implements SSOInterface {
         VelocityContext vc = new VelocityContext();
         try {
             vc.put("shibboleth_url", ssoUrl.replace("default/sso", "default/sso/shibboleth"));
+            vc.put("serverUrlBase", serverUrlBase.replaceAll("/$",""));
             shibbolethTemplate.merge(vc, sw);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
