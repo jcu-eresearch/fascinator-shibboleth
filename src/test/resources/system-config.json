@@ -1,0 +1,20 @@
+{   "urlBase": "${server.url.base}",
+    "Shibboleth":{
+        "use_headers": "false",
+        "username_attribute":"auEduPersonSharedToken",
+        "cn_attribute":"displayName",
+        "session_attribute":"Shib-Session-ID",
+        "idp_attribute":"Shib-Identity-Provider",
+        "attributes":["eduPersonAffiliation", "commonName"],
+        "delimiter":";",
+        "rolePlugins":["SimpleShibbolethRoleManager"],
+        "SimpleShibbolethRoleManager":{
+            "staff":[
+                ["affiliation","is","staff"]
+            ],
+            "institution":[
+                ["Shib-Identity-Provider","is","https://idp.example.com/idp/shibboleth"]
+            ]
+        }
+    }
+}
