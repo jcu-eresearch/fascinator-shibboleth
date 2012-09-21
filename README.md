@@ -103,7 +103,7 @@ Shibboleth
 Add the Shibboleth configuration section:
 
     "Shibboleth":{
-        "useHeaders": "false",
+        "use_headers": "false",
         "username_attribute":"eppn",
         "cn_attribute":"cn",
         "session_attribute":"Shib-Session-ID",
@@ -116,8 +116,8 @@ Add the Shibboleth configuration section:
         .
      }
 
-### useHeaders
-The `useHeaders` element enables the Shibboleth plugin to process the request `HEADERS`
+### use_headers
+The `use_headers` element enables the Shibboleth plugin to process the request `HEADERS`
 along with the request `ATTRIBUTES` for Shibboleth attributes. This is disabled by
 default because it posses a security issue as clients can spoof the request headers.
 
@@ -167,21 +167,38 @@ to find its configuration in the existing Shibboleth block, for example:
         .
         "SimpleShibbolethRoleManager":{
             "reviewer":[
-                ["affiliation","is","member@edu.au"]
+                [
+                    ["affiliation","is","member@edu.au"]
+                ],
+                [
+                    ["auEduPersonSharedToken","is","ddsdsf678hgH878786G67F7Fg"]
+                ]
             ],
             "ourInstitution":[
-                ["Shib-Identity-Provider","is","https://idp.example.com:8443/idp/shibboleth"]
+                [
+                    ["Shib-Identity-Provider","is","https://idp.example.com:8443/idp/shibboleth"]
+                ]
             ]
         }
     },
 
 The format of the SimpleShibbolethRoleManager block is:
 
-    role :[
-        [attribute, operation, rule_value],
-        [attribute, operation, rule_value],
+    role:[
+        [                                                       //
+            [attribute, operation, rule_value],    //Rule1      // Rule Group  1
+            [attribute, operation, rule_value]     //Rule2      //
+        ]                                                       //
+        ,
+        [                                                       //
+           [attribute, operation, rule_value],    //Rule3       // Rule Group 2
+           [attribute, operation, rule_value]     //Rule4       //
+        ]                                                       //
     ],
-    role
+    role2:[
+    .
+    .
+    .
 
 Where
 
@@ -190,8 +207,11 @@ Where
 * `operation` is the ID of the ShibSimpleRoleOperator plugin to use.
 * `rule_value` is a value passed to the operation along with the value of the `attribute` retrieved from the session.
 
-Within a `role`'s set of rules, the results of each operation are logically `AND`ed together.
-To use an `OR`, just have multiple entries for the same `role`.
+Within a `role`'s rule groups, the results of each operation are logically `AND`ed together.
+Between a `role`'s rule groups, the rule group's results are logically `OR`ed together.
+The first Role above would thus be evaluated as:
+
+    (Rule1 && Rule2) || (Rule3 && Rul4)
 
 Development
 ====
