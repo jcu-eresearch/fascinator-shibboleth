@@ -88,6 +88,8 @@ public class SSOTest {
     {
         List<String> roles = s.getRolesList(session);
         Assert.assertTrue("The role list did not contain: institution", roles.contains("institution"));
+        Assert.assertTrue("The role list did not contain: staff", roles.contains("staff"));
+        Assert.assertFalse("The role list should not contain: reviewer", roles.contains("reviewer"));
     }
 
     @Test
