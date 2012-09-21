@@ -1,20 +1,34 @@
-{   "urlBase": "${server.url.base}",
+{   "urlBase":"${server.url.base}",
     "Shibboleth":{
-        "use_headers": "false",
+        "use_headers":"false",
         "username_attribute":"auEduPersonSharedToken",
         "cn_attribute":"displayName",
         "session_attribute":"Shib-Session-ID",
         "idp_attribute":"Shib-Identity-Provider",
-        "attributes":["eduPersonAffiliation", "commonName"],
+        "attributes":["eduPersonAffiliation", "commonName", "unscoped-affiliation"],
         "delimiter":";",
         "rolePlugins":["SimpleShibbolethRoleManager"],
         "SimpleShibbolethRoleManager":{
             "staff":[
-                ["affiliation","is","staff"]
+                [
+                    ["unscoped-affiliation", "is", "staff"]
+                ]
             ],
             "institution":[
-                ["Shib-Identity-Provider","is","https://idp.example.com/idp/shibboleth"]
+                [
+                    ["Shib-Identity-Provider", "is", "https://idp.example.com/idp/shibboleth"]
+                ]
+            ],
+            "reviewer":[
+                [
+                    ["Shib-Session-ID", "is", "_srd34f5f5tg3wd5yt6hfddsgj7htgtfg"]
+
+                ],
+                [
+                    ["auEduPersonSharedToken", "is", "ddsdsf678hgH878786G67F7Fg"]
+                ]
             ]
+
         }
     }
 }
