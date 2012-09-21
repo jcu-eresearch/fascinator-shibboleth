@@ -43,7 +43,7 @@ public class SSOTest {
         req.setAttribute("Shib-Authentication-Method", "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport");
         req.setAttribute("Shib-Application-ID", "default");
         req.setAttribute("cn", "Billy Blogs");
-        req.setAttribute("transient-name", "_f45tgfde35tgf4rfdf65trg5rr45ttg778ikkjgt6");
+        req.setAttribute("transient-name", "_f45tgfde3fdsa46hf4tfcd3g5rr45ttg778ikkjgt6");
         req.setAttribute("javax.servlet.request.cipher_suite", "DHE-RSA-AES256-SHA");
         req.setAttribute("Shib-Identity-Provider", "https://idp.example.com/idp/shibboleth");
         req.setAttribute("displayName", "Billy Blogs");
