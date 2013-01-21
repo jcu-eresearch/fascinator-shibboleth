@@ -89,23 +89,29 @@ public class SimpleShibbolethRoleManager implements ShibbolethRoleManager {
                 logger.info(String.format("%s Array: %s", role, tmp.toJSONString()));
                 int entryCount = 0;
                 for (Object _rule : tmp) {
-                    rule = (JSONArray) _rule;
-                    _attr = (ArrayList) session.get(rule.get(ATTR_POS).toString());
-                    if (_attr != null) {
-                        logger.trace("Found attr: " + rule.get(ATTR_POS) + " in session.");
-                        operation = operations.get(op = rule.get(OP_POS).toString());
-                        if (operation != null) {
-                            for (Object s : _attr) {
-                                attr = (String) s;
-                                if (operation.doOperation(rule.get(VALUE_POS).toString(), attr)) {
-                                    entryCount++;
+                    if (_rule instanceof JSONArray) {
+                        rule = (JSONArray) _rule;
+                        _attr = (ArrayList) session.get(rule.get(ATTR_POS).toString());
+                        if (_attr != null) {
+                            logger.trace("Found attr: " + rule.get(ATTR_POS) + " in session.");
+                            operation = operations.get(op = rule.get(OP_POS).toString());
+                            if (operation != null) {
+                                for (Object s : _attr) {
+                                    attr = (String) s;
+                                    if (operation.doOperation(rule.get(VALUE_POS).toString(), attr)) {
+                                        entryCount++;
+                                    }
                                 }
+                            } else {
+                                logger.error(String.format("The operation: %s is unknown, skipping.", op));
                             }
-                        } else {
-                            logger.error(String.format("The operation: %s is unknown, skipping.", op));
                         }
                     }
-
+                    else
+                    {
+                        logger.error(String.format("The %s role is not correctly configured fo the %s role manager.",
+                                role, SimpleShibbolethRoleManager.class.getName()));
+                    }
                 }
                 logger.trace(String.format("Entry Count: %d Size: %d", entryCount, tmp.size()));
                 if (entryCount == tmp.size()) {
