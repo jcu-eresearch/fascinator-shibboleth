@@ -227,3 +227,23 @@ assigning roles to users.
 The ShibSimpleRoleOperator plugins allow developers to extent the functionality of the
 SimpleShibbolethRoleManager by implementing new operations.
 Both of these plugins use the standard Fascinator plugin mechanisms.
+
+Logging
+----
+You can add the following to your `server/jetty/resources/logback.groovy` file to enable the output of the Shibboleth SSO plugin's debug messages to `${logHome}/logs/shibboleth.log`
+```gorovy
+appender("Shibboleth", RollingFileAppender) {
+  file = "${logHome}/logs/shibboleth.log"
+  rollingPolicy(TimeBasedRollingPolicy) {
+    fileNamePattern = "${logHome}/logs/archives/%d{yyyy-MM}_shibboleth.zip"
+    maxHistory = 30
+  }
+  encoder(PatternLayoutEncoder) {
+    pattern = "%d %-8X{name} %-6p %-20.20c{0} %m%n"
+  }
+}
+```
+
+```groovy
+logger("au.edu.jcu", TRACE, ["Shibboleth"])
+```
