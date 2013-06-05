@@ -252,3 +252,7 @@ Credits
 =======
 
 This project is supported by the [Australian National Data Service (ANDS)](http://www.ands.org.au) through the National Collaborative Research Infrastructure Strategy Program and the Education Investment Fund (EIF) Super Science Initiative, as well as through the [Queensland Cyber Infrastructure Foundation (QCIF)](http://www.qcif.edu.au).
+
+Licence
+=======
+All code licensed under GPLv2 - see [`LICENSE`](./LICENSE) for details.
