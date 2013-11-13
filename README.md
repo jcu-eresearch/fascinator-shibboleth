@@ -9,6 +9,10 @@ needed in order actually use shibboleth. Please see the following documentation 
 * https://wiki.shibboleth.net/confluence/display/SHIB2/Installation+and+Configuration
 * http://wiki.aaf.edu.au/tech-info/sp-install-guide
 
+For windows users you may need to incorperate elements (and get downloads) from:
+* https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPWindowsApacheInstaller
+
+
 Apache example using mod_proxy_ajp:
 
     ProxyPass /redbox  ajp://localhost:8009/redbox
