@@ -16,7 +16,7 @@ See [NativeSPApacheConfig](https://wiki.shibboleth.net/confluence/display/SHIB2/
 
 to youir apache config.
 
-Apache example using HTTP
+Apache example using HTTP Headers
 =====
 
 Apache config:
@@ -28,7 +28,7 @@ Apache config:
         AuthType shibboleth
         ShibRequestSetting requireSession 1
         require valid-user
-	ShibUseHeaders On
+        ShibUseHeaders On
     </Location>
 
 
