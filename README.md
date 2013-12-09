@@ -82,7 +82,7 @@ There are two ways to configure the fascinator-shibboleth plugin:
 * [HTTP Connector](doc/http-connector.md)
 
 
-Enabling the Shibboleth plugin in the ReDBoX Configuration
+Enabling the Shibboleth plugin
 ====
 
 In the sso section of home/config/system-config.json, enable the Shibboleth plugin:
