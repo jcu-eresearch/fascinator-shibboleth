@@ -4,6 +4,9 @@ The Fascinator Shibboleth SSO Plugin
 This project is a plugin for The Fascinator project: https://code.google.com/p/the-fascinator
 though, typically, it would be used in an institutional build of RedBoX: http://code.google.com/p/redbox-mint/ .
 
+Shibboleth Installation
+====
+
 These instructions explain how to install the plugin and how to configure it, however, additional work is
 needed in order actually use shibboleth. Please see the following documentation for more information:
 * https://wiki.shibboleth.net/confluence/display/SHIB2/Installation+and+Configuration
@@ -13,39 +16,20 @@ For windows users you may need to incorperate elements (and get downloads) from:
 * https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPWindowsApacheInstaller
 
 
-Apache example using mod_proxy_ajp:
 
-    ProxyPass /redbox  ajp://localhost:8009/redbox
-    ProxyPassReverse /redbox  ajp://localhost:8009/redbox
-
-    <Location /redbox/default/sso/shibboleth>
-        AuthType shibboleth
-        ShibRequestSetting requireSession 1
-        require valid-user
-    </Location>
-
-
-Add the following to the config/server/jetty/etc/jetty.xml file of your institutional build:
-
-    <Call name="addConnector">
-      <Arg>
-        <New class="org.mortbay.jetty.ajp.Ajp13SocketConnector">
-          <Set name="port">8009</Set>
-        </New>
-      </Arg>
-    </Call>
-
-In /etc/shibboleth/shibboleth2.xml add attributePrefix="AJP_" to the ApplicationDefaults element:
-
-    <ApplicationDefaults ...
-                          attributePrefix="AJP_">
-
+Compiling
+====
 
 To compile the fascinator-shibboleth plugin:
 
 	#> mvn install
 
-To enable Shibboleth ib your institutional build (when using ReDBox for example)
+
+
+Instutional Build
+====
+
+To enable Shibboleth in your institutional build (when using ReDBox for example)
 add the following dependency to your pom.xml:
 
         <dependency>
@@ -88,7 +72,17 @@ You will need to add the unpack-shib-conf execution to the maven-dependency-plug
                 </executions>
             </plugin>
 
-Configuration
+
+Connector Configuration
+====
+
+There are two ways to configure the fascinator-shibboleth plugin:
+
+* [AJP Connector](doc/ajp-connector.md) (recommended by shibboleth)
+* [HTTP Connector](doc/http-connector.md)
+
+
+Enabling the Shibboleth plugin in the ReDBoX Configuration
 ====
 
 In the sso section of home/config/system-config.json, enable the Shibboleth plugin:
@@ -120,6 +114,10 @@ Add the Shibboleth configuration section:
         .
         .
      }
+
+
+Shibboleth Configuration Parameters
+===
 
 ### use_headers
 The `use_headers` element enables the Shibboleth plugin to process the request `HEADERS`
