@@ -1,4 +1,4 @@
-[Using this connection method will result is security breaches.](https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPSpoofChecking)
+[Using this connection method will result is security breaches.](https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPSpoofChecking#NativeSPSpoofChecking-Apache)
 ====
 Apache
 -----
