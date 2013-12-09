@@ -26,7 +26,7 @@ To compile the fascinator-shibboleth plugin:
 
 
 
-Instutional Build
+Institutional Build
 ====
 
 To enable Shibboleth in your institutional build (when using ReDBox for example)
