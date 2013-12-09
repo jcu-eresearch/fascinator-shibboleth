@@ -73,15 +73,6 @@ You will need to add the unpack-shib-conf execution to the maven-dependency-plug
             </plugin>
 
 
-Connector Configuration
-====
-
-There are two ways to configure the fascinator-shibboleth plugin:
-
-* [AJP Connector](doc/ajp-connector.md) (recommended by shibboleth)
-* [HTTP Connector](doc/http-connector.md)
-
-
 Enabling the Shibboleth plugin
 ====
 
@@ -99,7 +90,7 @@ In the sso section of home/config/system-config.json, enable the Shibboleth plug
 Shibboleth
 ----
 
-Add the Shibboleth configuration section:
+Add the Shibboleth configuration section, and configure it according to your connector requirements (see below):
 
     "Shibboleth":{
         "use_headers": "false",
@@ -114,6 +105,15 @@ Add the Shibboleth configuration section:
         .
         .
      }
+
+
+Connector Configuration
+====
+
+There are two ways to configure the fascinator-shibboleth plugin:
+
+* [AJP Connector](doc/ajp-connector.md) (recommended by shibboleth)
+* [HTTP Connector](doc/http-connector.md)
 
 
 Shibboleth Configuration Parameters
