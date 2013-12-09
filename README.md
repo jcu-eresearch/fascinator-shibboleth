@@ -30,7 +30,7 @@ Institutional Build
 ====
 
 To enable Shibboleth in your institutional build (when using ReDBox for example)
-add the following dependency to your pom.xml:
+add the following dependency to your `pom.xml`:
 
         <dependency>
             <groupId>fascinator-shibboleth</groupId>
@@ -76,7 +76,7 @@ You will need to add the unpack-shib-conf execution to the maven-dependency-plug
 Enabling the Shibboleth plugin
 ====
 
-In the sso section of home/config/system-config.json, enable the Shibboleth plugin:
+In the sso section of `home/system-config.json`, enable the Shibboleth plugin:
 
 	.
 	.

@@ -13,7 +13,7 @@ Apache config:
     </Location>
 
 
-Add the following to the config/server/jetty/etc/jetty.xml file of your institutional build:
+Add the following to the `config/server/jetty/etc/jetty.xml` file of your institutional build:
 
     <Call name="addConnector">
       <Arg>
@@ -23,12 +23,12 @@ Add the following to the config/server/jetty/etc/jetty.xml file of your institut
       </Arg>
     </Call>
 
-In /etc/shibboleth/shibboleth2.xml add attributePrefix="AJP_" to the ApplicationDefaults element:
+In `/etc/shibboleth/shibboleth2.xml` add attributePrefix="AJP_" to the ApplicationDefaults element:
 
     <ApplicationDefaults ...
                           attributePrefix="AJP_">
 
-In home/config/system-config.json create the `Shibboleth` configuration section:
+In `home/system-config.json` create the `Shibboleth` configuration section:
 
     "Shibboleth":{
         "use_headers": "false",

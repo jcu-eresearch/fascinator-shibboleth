@@ -13,7 +13,7 @@ Apache config:
     </Location>
 
 
-In home/config/system-config.json create the `Shibboleth` configuration section:
+In `home/system-config.json` create the `Shibboleth` configuration section:
 
     "Shibboleth":{
         "use_headers": "true",
