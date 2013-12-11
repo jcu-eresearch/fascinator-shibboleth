@@ -1,4 +1,4 @@
-Encounted Issues
+Encountered Issues
 ====
 
 Symbols in Username
